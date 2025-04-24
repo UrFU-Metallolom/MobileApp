@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Greenhouse</string>
+
+    <string name="slash"> / </string>
+
+    <string name="device_list">Your Devices</string>
+    <string name="device_add">Add Device</string>
+    <string name="device_edit">Device Settings</string>
+    <string name="device_code">Device Code</string>
 </resources>
