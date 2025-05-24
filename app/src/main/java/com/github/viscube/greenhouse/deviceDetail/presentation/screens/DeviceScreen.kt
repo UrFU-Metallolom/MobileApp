@@ -15,8 +15,6 @@ import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.stack.LocalStackNavigation
-import com.github.terrakok.modo.stack.back
-import com.github.terrakok.modo.stack.forward
 import com.github.viscube.greenhouse.deviceDetail.presentation.viewModel.DeviceViewModel
 import com.github.viscube.greenhouse.ui.components.DeviceCard
 import com.github.viscube.greenhouse.ui.components.IconButton
@@ -26,14 +24,14 @@ import org.koin.core.parameter.parametersOf
 
 @Parcelize
 class DeviceScreen(
+    private val connectionData: String,
     override val screenKey: ScreenKey = generateScreenKey(),
-    // TODO передавать девайс между экранами
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content(modifier: Modifier) {
         val navigation = LocalStackNavigation.current
-        val viewModel = koinViewModel<DeviceViewModel> { parametersOf(navigation) }
+        val viewModel = koinViewModel<DeviceViewModel> { parametersOf(connectionData, navigation) }
         val viewState = viewModel.viewState
 
         Scaffold(
@@ -42,13 +40,15 @@ class DeviceScreen(
                     title = { viewState.device?.let { Text(text = it.name) } },
                     navigationIcon = {
                         IconButton(
-                            onClick = { navigation.back() },
+                            onClick = { viewModel.onBackClicked() },
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack
                         )
                     },
                     actions = {
                         IconButton(
-                            onClick = { navigation.forward(EditScreen()) },
+                            onClick = {
+                                viewModel.onEditClicked()
+                            },
                             imageVector = Icons.Rounded.Edit
                         )
                     }

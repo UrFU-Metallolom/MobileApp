@@ -20,18 +20,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.viscube.greenhouse.R
 import com.github.viscube.greenhouse.deviceDetail.data.mock.DeviceData
-import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceEntity
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceDetailEntity
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.SensorType
 
 @Composable
 fun EditCard(
-    device: DeviceEntity,
-    // TODO
+    device: DeviceDetailEntity,
+    onNameChanged: (String) -> Unit = {},
+    onWiFiSsidChanged: (String) -> Unit = {},
+    onWiFiPasswordChanged: (String) -> Unit = {},
+    onTempRefChanged: (String) -> Unit = {},
+    onLightRefChanged: (String) -> Unit = {},
+    onMoistureRefChanged: (String) -> Unit = {}
 ) {
     Column {
         TextField(
             value = device.name,
-            onValueChange = { /* TODO */ },
+            onValueChange = { onNameChanged(it) },
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = {
                 Icon(
@@ -42,7 +47,7 @@ fun EditCard(
         )
         TextField(
             value = device.wifiSSID ?: "",
-            onValueChange = { /* TODO */ },
+            onValueChange = { onWiFiSsidChanged(it) },
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = {
                 Icon(
@@ -53,7 +58,7 @@ fun EditCard(
         )
         TextField(
             value = device.wifiPASS ?: "",
-            onValueChange = { /* TODO */ },
+            onValueChange = { onWiFiPasswordChanged(it) },
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = {
                 Icon(
@@ -63,16 +68,23 @@ fun EditCard(
             }
         )
         LazyColumn {
-            items(device.sensors) {
+            items(device.sensors) { sensor ->
                 TextField(
-                    value = it.reference?.toString() ?: it.value.toString(),
-                    enabled = it.reference != null,
-                    onValueChange = { /* TODO */ },
+                    value = sensor.reference,
+                    enabled = sensor.type != SensorType.WATER,
+                    onValueChange = {
+                        when (sensor.type) {
+                            SensorType.LIGHT -> onLightRefChanged(it)
+                            SensorType.TEMPERATURE -> onTempRefChanged(it)
+                            SensorType.MOISTURE -> onMoistureRefChanged(it)
+                            SensorType.WATER -> {}
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.titleMedium,
                     leadingIcon = {
                         Icon(
-                            painter = when (it.type) {
+                            painter = when (sensor.type) {
                                 SensorType.LIGHT -> painterResource(R.drawable.lightbulb)
                                 SensorType.TEMPERATURE -> painterResource(R.drawable.thermostat)
                                 SensorType.MOISTURE -> painterResource(R.drawable.moisture)
@@ -83,7 +95,7 @@ fun EditCard(
                     },
                     prefix = {
                         Row {
-                            Text(text = it.value.toString())
+                            Text(text = sensor.value)
                             Text(text = stringResource(R.string.slash))
                         }
                     }

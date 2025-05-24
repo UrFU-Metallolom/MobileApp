@@ -23,14 +23,13 @@ import com.github.viscube.greenhouse.ui.theme.Spacing
 @Composable
 fun SensorItem(
     sensor: SensorEntity,
-    // TODO
 ) {
     TopAppBar(
         title = {
             Row {
-                Text(text = sensor.value.toString())
+                Text(text = sensor.value.ifEmpty { "?" })
                 Text(text = stringResource(R.string.slash))
-                Text(text = sensor.reference?.toString() ?: sensor.value.toString())
+                Text(text = sensor.reference.ifEmpty { "?" })
             }
         },
         navigationIcon = {

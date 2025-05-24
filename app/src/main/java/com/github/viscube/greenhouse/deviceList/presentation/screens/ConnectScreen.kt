@@ -1,5 +1,6 @@
 package com.github.viscube.greenhouse.deviceList.presentation.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,11 +21,11 @@ import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.stack.LocalStackNavigation
-import com.github.terrakok.modo.stack.back
 import com.github.viscube.greenhouse.R
 import com.github.viscube.greenhouse.deviceList.presentation.viewModel.ConnectViewModel
 import com.github.viscube.greenhouse.ui.components.BLEDeviceItem
 import com.github.viscube.greenhouse.ui.components.IconButton
+import com.github.viscube.greenhouse.ui.permissions.BluetoothSetupSection
 import kotlinx.parcelize.Parcelize
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -46,7 +47,7 @@ class ConnectScreen(
                     title = { Text(text = stringResource(R.string.device_add)) },
                     navigationIcon = {
                         IconButton(
-                            onClick = { navigation.back() },
+                            onClick = { viewModel.onBackClicked() },
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack
                         )
                     }
@@ -54,26 +55,37 @@ class ConnectScreen(
             },
             bottomBar = {
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = viewState.deviceCode ?: "",
+                    onValueChange = { viewModel.onDeviceCodeChanged(it) },
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = stringResource(R.string.device_code)) },
                     trailingIcon = {
                         IconButton(
-                            onClick = { /* TODO */ },
+                            onClick = { viewModel.onCodeConnectClicked() },
                             painter = painterResource(R.drawable.wifi)
                         )
                     }
                 )
             }
         ) { paddingValues ->
-            LazyColumn(modifier = Modifier.padding(paddingValues)) {
-                items(viewState.bleDevices) {
-                    BLEDeviceItem(
-                        device = it,
-                        onClick = { /* TODO */ }
-                    )
-                    HorizontalDivider()
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+            ) {
+
+
+                BluetoothSetupSection {
+                    viewModel.startScan()
+                }
+
+                LazyColumn(modifier = Modifier.padding(paddingValues)) {
+                    items(viewState.bleDevices) {
+                        BLEDeviceItem(
+                            device = it,
+                            onClick = { viewModel.onBlDeviceClicked(it) },
+                        )
+                        HorizontalDivider()
+                    }
                 }
             }
         }

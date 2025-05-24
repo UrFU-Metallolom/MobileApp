@@ -11,15 +11,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.terrakok.modo.Screen
 import com.github.terrakok.modo.ScreenKey
 import com.github.terrakok.modo.generateScreenKey
 import com.github.terrakok.modo.stack.LocalStackNavigation
-import com.github.terrakok.modo.stack.forward
 import com.github.viscube.greenhouse.R
-import com.github.viscube.greenhouse.deviceDetail.presentation.screens.DeviceScreen
 import com.github.viscube.greenhouse.deviceList.presentation.viewModel.ListViewModel
 import com.github.viscube.greenhouse.ui.components.DeviceItem
 import com.github.viscube.greenhouse.ui.components.IconButton
@@ -36,7 +36,7 @@ class ListScreen(
     override fun Content(modifier: Modifier) {
         val navigation = LocalStackNavigation.current
         val viewModel = koinViewModel<ListViewModel> { parametersOf(navigation) }
-        val viewState = viewModel.viewState
+        val devices by viewModel.devices.collectAsState()
 
         Scaffold(
             topBar = {
@@ -44,7 +44,7 @@ class ListScreen(
                     title = { Text(text = stringResource(R.string.device_list)) },
                     actions = {
                         IconButton(
-                            onClick = { navigation.forward(ConnectScreen()) },
+                            onClick = { viewModel.onAddConnectionClicked() },
                             imageVector = Icons.Rounded.Add
                         )
                     }
@@ -52,11 +52,18 @@ class ListScreen(
             }
         ) { paddingValues ->
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
-                items(viewState.devices) {
+                items(devices) {
                     DeviceItem(
                         device = it,
-                        onClickBLE = { navigation.forward(DeviceScreen(/* TODO */)) },
-                        onClickWiFi = { navigation.forward(DeviceScreen(/* TODO */)) }
+                        onClickBLE = {
+                            viewModel.onConnectClicked(it.connectionData)
+                        },
+                        onClickWiFi = {
+                            viewModel.onConnectClicked(it.connectionData)
+                        },
+                        onLongClick = {
+                            viewModel.onLongClicked(it)
+                        }
                     )
                     HorizontalDivider()
                 }

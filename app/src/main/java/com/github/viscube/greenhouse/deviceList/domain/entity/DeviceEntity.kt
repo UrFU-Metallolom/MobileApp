@@ -1,8 +1,12 @@
 package com.github.viscube.greenhouse.deviceList.domain.entity
 
-/* TODO */
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class DeviceEntity(
+    @PrimaryKey(autoGenerate = false) val connectionData: String,
     val name: String,
-    val ble: Boolean, // TODO BLEEntity
-    val wifi: Boolean, // TODO Device Code
+    val ble: Boolean,
+    val wifi: Boolean,
 )

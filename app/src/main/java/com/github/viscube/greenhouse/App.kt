@@ -1,10 +1,11 @@
 package com.github.viscube.greenhouse
 
 import android.app.Application
+import com.github.viscube.greenhouse.di.dbModule
+import com.github.viscube.greenhouse.di.rootModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import com.github.viscube.greenhouse.di.rootModule
 
 class App : Application() {
 
@@ -14,7 +15,7 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(rootModule)
+            modules(rootModule, dbModule)
         }
     }
 }

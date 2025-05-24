@@ -1,8 +1,7 @@
 package com.github.viscube.greenhouse.deviceDetail.presentation.state
 
-import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceEntity
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceDetailEntity
 
-/* TODO */
 interface DeviceState {
-    val device: DeviceEntity?
+    val device: DeviceDetailEntity?
 }

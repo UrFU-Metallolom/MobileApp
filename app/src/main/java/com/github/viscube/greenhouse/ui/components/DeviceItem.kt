@@ -1,15 +1,18 @@
 package com.github.viscube.greenhouse.ui.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.viscube.greenhouse.R
-import com.github.viscube.greenhouse.deviceList.data.mock.DeviceData
+//import com.github.viscube.greenhouse.deviceList.data.mock.DeviceData
 import com.github.viscube.greenhouse.deviceList.domain.entity.DeviceEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,7 +20,8 @@ import com.github.viscube.greenhouse.deviceList.domain.entity.DeviceEntity
 fun DeviceItem(
     device: DeviceEntity,
     onClickBLE: () -> Unit,
-    onClickWiFi: () -> Unit
+    onClickWiFi: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     TopAppBar(
         title = { Text(text = device.name) },
@@ -35,6 +39,12 @@ fun DeviceItem(
                 )
             }
         },
+        modifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onLongPress = { onLongClick() }
+            )
+        },
+
         windowInsets = WindowInsets(top = 0.dp, bottom = 0.dp)
     )
 }
@@ -43,8 +53,14 @@ fun DeviceItem(
 @Composable
 fun DeviceItemPreview() {
     DeviceItem(
-        device = DeviceData.items.first(),
+        device = DeviceEntity(
+            connectionData = "123",
+            name = "Device",
+            wifi = true,
+            ble = false
+        ),
         onClickBLE = {},
-        onClickWiFi = {}
+        onClickWiFi = {},
+        onLongClick = {}
     )
 }
