@@ -28,8 +28,10 @@ fun SensorItem(
         title = {
             Row {
                 Text(text = sensor.value.ifEmpty { "?" })
-                Text(text = stringResource(R.string.slash))
-                Text(text = sensor.reference.ifEmpty { "?" })
+                if (sensor.reference.isNotEmpty()) {
+                    Text(text = stringResource(R.string.slash))
+                    Text(text = sensor.reference)
+                }
             }
         },
         navigationIcon = {

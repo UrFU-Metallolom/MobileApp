@@ -68,7 +68,7 @@ fun EditCard(
             }
         )
         LazyColumn {
-            items(device.sensors) { sensor ->
+            items(device.sensors.filter { sensor -> sensor.type != SensorType.WATER }) { sensor ->
                 TextField(
                     value = sensor.reference,
                     enabled = sensor.type != SensorType.WATER,
@@ -100,6 +100,12 @@ fun EditCard(
                         }
                     }
                 )
+                HorizontalDivider()
+            }
+        }
+        LazyColumn {
+            items(device.sensors) { _ -> // TODO presets from repository
+                PresetItem(/* TODO preset arg */)
                 HorizontalDivider()
             }
         }

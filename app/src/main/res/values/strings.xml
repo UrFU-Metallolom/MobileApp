@@ -7,4 +7,5 @@
     <string name="device_add">Add Device</string>
     <string name="device_edit">Device Settings</string>
     <string name="device_code">Device Code</string>
+    <string name="presets">Presets</string>
 </resources>
