@@ -3,10 +3,12 @@ package com.github.viscube.greenhouse.di
 import android.content.Context
 import androidx.room.Room
 import com.github.viscube.greenhouse.database.Database
+import com.github.viscube.greenhouse.database.PrepopulatePresetsUseCase
 import org.koin.dsl.module
 
 val dbModule = module {
     single { DatabaseBuilder.getInstance(get()) }
+    single { PrepopulatePresetsUseCase(get()) }
 }
 
 object DatabaseBuilder {
@@ -26,5 +28,6 @@ object DatabaseBuilder {
             context.applicationContext,
             Database::class.java,
             "devices"
-        ).build()
+        ).fallbackToDestructiveMigration(false)
+            .build()
 }

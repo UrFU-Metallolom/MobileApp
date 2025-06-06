@@ -3,10 +3,9 @@ package com.github.viscube.greenhouse.deviceDetail.domain.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity()
+@Entity
 data class DeviceDetailDbEntity(
-    @PrimaryKey
-    val connectionData: String,
+    @PrimaryKey val connectionData: String,
     val connectionType: String,
     val name: String,
     val wifiSSID: String?,

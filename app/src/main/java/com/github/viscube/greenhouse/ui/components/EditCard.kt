@@ -21,17 +21,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.viscube.greenhouse.R
 import com.github.viscube.greenhouse.deviceDetail.data.mock.DeviceData
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceDetailEntity
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.PresetEntity
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.SensorType
 
 @Composable
 fun EditCard(
     device: DeviceDetailEntity,
+    presets: List<PresetEntity>,
     onNameChanged: (String) -> Unit = {},
     onWiFiSsidChanged: (String) -> Unit = {},
     onWiFiPasswordChanged: (String) -> Unit = {},
     onTempRefChanged: (String) -> Unit = {},
     onLightRefChanged: (String) -> Unit = {},
-    onMoistureRefChanged: (String) -> Unit = {}
+    onMoistureRefChanged: (String) -> Unit = {},
+    onPresetClicked: (PresetEntity) -> Unit = {}
 ) {
     Column {
         TextField(
@@ -104,8 +107,8 @@ fun EditCard(
             }
         }
         LazyColumn {
-            items(device.sensors) { _ -> // TODO presets from repository
-                PresetItem(/* TODO preset arg */)
+            items(presets) { preset ->
+                PresetItem(preset) { onPresetClicked(preset) }
                 HorizontalDivider()
             }
         }
@@ -117,5 +120,9 @@ fun EditCard(
 fun EditCardPreview() {
     EditCard(
         device = DeviceData.devices.last(),
+        presets = listOf(
+            PresetEntity("preset1", "20", "40", "60"),
+            PresetEntity("preset2", "22", "35", "55")
+        )
     )
 }

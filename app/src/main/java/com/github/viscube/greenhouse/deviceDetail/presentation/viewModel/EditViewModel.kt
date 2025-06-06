@@ -9,6 +9,7 @@ import com.github.terrakok.modo.stack.StackNavContainer
 import com.github.terrakok.modo.stack.back
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.ConnectionType
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceDetailEntity
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.PresetEntity
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.SensorType
 import com.github.viscube.greenhouse.deviceDetail.domain.repository.IBleRepository
 import com.github.viscube.greenhouse.deviceDetail.domain.repository.IDeviceDetailRepository
@@ -30,6 +31,9 @@ class EditViewModel(
 
     init {
         mutableState.device = device
+        viewModelScope.launch {
+            mutableState.presets = dbRepository.getPresets()
+        }
         connectToDevice()
     }
 
@@ -45,10 +49,13 @@ class EditViewModel(
                     bleRepository.sendCommand(command)
                     delay(200)
                 }
-                bleRepository.sendCommand("ssid=${viewState.device.wifiSSID}\r\n")
-                delay(200)
-                bleRepository.sendCommand("pass=${viewState.device.wifiPASS}\r\n")
-
+                if (viewState.device.wifiSSID?.isNotEmpty() == true
+                    && viewState.device.wifiPASS?.isNotEmpty() == true
+                ) {
+                    bleRepository.sendCommand("ssid=${viewState.device.wifiSSID}\r\n")
+                    delay(200)
+                    bleRepository.sendCommand("pass=${viewState.device.wifiPASS}\r\n")
+                }
             }
             dbRepository.saveDetailDevice(viewState.device)
             dbRepository.updateDeviceEntity(
@@ -60,9 +67,11 @@ class EditViewModel(
     }
 
     fun onWiFiSsidChanged(value: String) {
-        mutableState.device = mutableState.device.copy(
-            wifiSSID = value
-        )
+        if (value.isNotEmpty()) {
+            mutableState.device = mutableState.device.copy(
+                wifiSSID = value
+            )
+        }
     }
 
     fun onBackClicked() {
@@ -70,9 +79,11 @@ class EditViewModel(
     }
 
     fun onWiFiPasswordChanged(value: String) {
-        mutableState.device = mutableState.device.copy(
-            wifiPASS = value
-        )
+        if (value.isNotEmpty()) {
+            mutableState.device = mutableState.device.copy(
+                wifiPASS = value
+            )
+        }
     }
 
     fun onTempRefChanged(value: String) {
@@ -107,7 +118,6 @@ class EditViewModel(
         SensorType.MOISTURE to "moisture",
     )
 
-
     private fun connectToDevice() {
         viewModelScope.launch {
             mqttRepository.connect()
@@ -122,8 +132,23 @@ class EditViewModel(
         )
     }
 
+    fun onPresetClicked(value: PresetEntity) {
+        mutableState.device = mutableState.device.copy(
+            sensors = mutableState.device.sensors.map {
+                when (it.type) {
+                    SensorType.TEMPERATURE -> it.copy(reference = value.temperature)
+                    SensorType.MOISTURE -> it.copy(reference = value.moisture)
+                    SensorType.LIGHT -> it.copy(reference = value.light)
+                    else -> it
+                }
+            }
+        )
+
+    }
+
     private class MutableEditState(initialDevice: DeviceDetailEntity) : EditState {
         override var device: DeviceDetailEntity by mutableStateOf(initialDevice)
+        override var presets: List<PresetEntity> by mutableStateOf(emptyList())
         override var isSaveCompleted: Boolean by mutableStateOf(false)
     }
 }

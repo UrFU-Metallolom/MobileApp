@@ -1,5 +1,6 @@
 package com.github.viscube.greenhouse.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,19 +13,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.github.viscube.greenhouse.R
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.PresetEntity
 import com.github.viscube.greenhouse.ui.theme.Spacing
 
 @Composable
 fun PresetItem(
-    // TODO preset entity
-    // preset: PresetEntity,
+    preset: PresetEntity,
+    onClick: () -> Unit
 ) {
-    Column {
+
+    Column(
+        modifier = Modifier.clickable { onClick() },
+    ) {
+
         Row(modifier = Modifier.padding(vertical = Spacing.medium)) {
             Text(
-                text = "Plant_Name", // TODO plant name
+                text = preset.name,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge
@@ -40,32 +45,28 @@ fun PresetItem(
                 painter = painterResource(R.drawable.lightbulb),
                 contentDescription = null,
             )
-            Text(text = "69", style = MaterialTheme.typography.titleMedium) // TODO light preset
+            Text(
+                text = preset.light,
+                style = MaterialTheme.typography.titleMedium
+            )
 
             Icon(
                 painter = painterResource(R.drawable.thermostat),
                 contentDescription = null,
             )
             Text(
-                text = "24",
+                text = preset.temperature,
                 style = MaterialTheme.typography.titleMedium
-            ) // TODO temperature preset
+            )
 
             Icon(
                 painter = painterResource(R.drawable.moisture),
                 contentDescription = null,
             )
-            Text(text = "37", style = MaterialTheme.typography.titleMedium) // TODO moisture preset
+            Text(
+                text = preset.moisture,
+                style = MaterialTheme.typography.titleMedium
+            )
         }
     }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PresetItemPreview() {
-    PresetItem(
-        // TODO preset mock
-        // preset = ...,
-    )
 }

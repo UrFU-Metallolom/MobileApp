@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceDetailDbEntity
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.PresetEntity
 import com.github.viscube.greenhouse.deviceList.domain.entity.DeviceEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -38,4 +39,10 @@ interface DeviceDao {
 
     @Query("DELETE FROM devicedetaildbentity WHERE connectionData = :key")
     suspend fun deleteDetailDeviceByKey(key: String)
+
+    @Query("SELECT * FROM PresetEntity")
+    suspend fun getPresets(): List<PresetEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllPresets(presets: List<PresetEntity>)
 }

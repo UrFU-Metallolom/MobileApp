@@ -2,6 +2,7 @@ package com.github.viscube.greenhouse.deviceDetail.data.repository
 
 import com.github.viscube.greenhouse.database.Database
 import com.github.viscube.greenhouse.deviceDetail.domain.entity.DeviceDetailEntity
+import com.github.viscube.greenhouse.deviceDetail.domain.entity.PresetEntity
 import com.github.viscube.greenhouse.deviceDetail.domain.repository.IDeviceDetailRepository
 import com.github.viscube.greenhouse.deviceList.domain.entity.DeviceEntity
 import com.github.viscube.greenhouse.util.mapper.DeviceDetailMapper
@@ -34,5 +35,10 @@ class DeviceDetailRepository(
             val device: DeviceEntity = db.deviceDao().getDeviceEntityByData(key)
             db.deviceDao().updateDeviceEntity(device.copy(name = newName))
 
+        }
+
+    override suspend fun getPresets(): List<PresetEntity> =
+        withContext(Dispatchers.IO) {
+            db.deviceDao().getPresets()
         }
 }

@@ -72,12 +72,14 @@ class EditScreen(
             Row(Modifier.padding(paddingValues)) {
                 EditCard(
                     device = viewState.device,
+                    presets = viewState.presets,
                     onNameChanged = { value -> viewModel.onNameChanged(value) },
                     onWiFiSsidChanged = { value -> viewModel.onWiFiSsidChanged(value) },
                     onWiFiPasswordChanged = { value -> viewModel.onWiFiPasswordChanged(value) },
                     onTempRefChanged = { value -> viewModel.onTempRefChanged(value) },
                     onLightRefChanged = { value -> viewModel.onLightRefChanged(value) },
-                    onMoistureRefChanged = { value -> viewModel.onMoistureRefChanged(value) }
+                    onMoistureRefChanged = { value -> viewModel.onMoistureRefChanged(value) },
+                    onPresetClicked = { value -> viewModel.onPresetClicked(value) }
                 )
             }
         }
