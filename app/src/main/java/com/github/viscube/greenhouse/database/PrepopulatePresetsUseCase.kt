@@ -8,9 +8,11 @@ class PrepopulatePresetsUseCase(private val db: Database) {
         if (db.deviceDao().getPresets().isEmpty()) {
             db.deviceDao().insertAllPresets(
                 listOf(
-                    PresetEntity("Салат", "20", "70", "600"),
                     PresetEntity("Базилик ", "24", "60", "700"),
-                    PresetEntity("Петунья", "21", "50", "550")
+                    PresetEntity("Клубника", "24", "80", "900"),
+                    PresetEntity("Лук", "22", "65", "800"),
+                    PresetEntity("Петунья", "21", "50", "550"),
+                    PresetEntity("Салат", "20", "70", "600"),
                 )
             )
         }

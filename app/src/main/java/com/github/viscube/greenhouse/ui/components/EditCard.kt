@@ -96,6 +96,16 @@ fun EditCard(
                             contentDescription = null,
                         )
                     },
+                    trailingIcon = {
+                        Text(
+                            text = when (sensor.type) {
+                                SensorType.LIGHT -> "Lx"
+                                SensorType.TEMPERATURE -> "°C"
+                                SensorType.MOISTURE -> "%"
+                                SensorType.WATER -> ""
+                            }
+                        )
+                    },
                     prefix = {
                         Row {
                             Text(text = sensor.value)

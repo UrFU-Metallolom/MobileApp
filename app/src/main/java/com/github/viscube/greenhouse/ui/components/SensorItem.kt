@@ -27,11 +27,31 @@ fun SensorItem(
     TopAppBar(
         title = {
             Row {
-                Text(text = sensor.value.ifEmpty { "?" })
+                if (sensor.value.isEmpty()) {
+                    Text(text = "?")
+                    return@Row
+                }
+
+                Text(
+                    text = when (sensor.type) {
+                        SensorType.LIGHT -> sensor.value
+                        SensorType.TEMPERATURE -> sensor.value
+                        SensorType.MOISTURE -> sensor.value
+                        SensorType.WATER -> if (sensor.value == "1") "Enough" else "Not Enough"
+                    }
+                )
                 if (sensor.reference.isNotEmpty()) {
                     Text(text = stringResource(R.string.slash))
                     Text(text = sensor.reference)
                 }
+                Text(
+                    text = when (sensor.type) {
+                        SensorType.LIGHT -> "Lx"
+                        SensorType.TEMPERATURE -> "°C"
+                        SensorType.MOISTURE -> "%"
+                        SensorType.WATER -> ""
+                    }
+                )
             }
         },
         navigationIcon = {
